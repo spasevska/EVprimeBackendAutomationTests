@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+public class GetEventsResponse {
 
-public class LoginResponse {
-
-    String token, expirationTime, message;
-    ErrorResponse errors;
+    List<EventsResponse> events = new ArrayList<>();
 
 }

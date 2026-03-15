@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ErrorResponse {
-    String email, password;
+    String email, password, credentials;
 }

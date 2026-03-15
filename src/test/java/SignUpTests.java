@@ -29,7 +29,7 @@ public class SignUpTests {
         /* serialization */
         SignUpResponse signUpResponse = response.body().as(SignUpResponse.class);
 
-        assertEquals(201, response.getStatusCode());
+        assertEquals(201, response.statusCode());
         assertEquals(signUpRequest.getEmail(), signUpResponse.getUser().getEmail());
         assertEquals("User created.", signUpResponse.getMessage());
         assertNotNull(signUpResponse.getToken());
@@ -50,7 +50,7 @@ public class SignUpTests {
         /* serialization */
         SignUpResponse signUpResponse = response.body().as(SignUpResponse.class);
 
-        assertEquals(422, response.getStatusCode());
+        assertEquals(422, response.statusCode());
         assertEquals("User signup failed due to validation errors.", signUpResponse.getMessage());
         assertEquals("Email exists already.", signUpResponse.getErrors().getEmail());
     }
@@ -69,7 +69,7 @@ public class SignUpTests {
         /* serialization */
         SignUpResponse signUpResponse = response.body().as(SignUpResponse.class);
 
-        assertEquals(422, response.getStatusCode());
+        assertEquals(422, response.statusCode());
         assertEquals("User signup failed due to validation errors.", signUpResponse.getMessage());
         assertEquals("Invalid email.", signUpResponse.getErrors().getEmail());
     }
@@ -88,7 +88,7 @@ public class SignUpTests {
         /* serialization */
         SignUpResponse signUpResponse = response.body().as(SignUpResponse.class);
 
-        assertEquals(422, response.getStatusCode());
+        assertEquals(422, response.statusCode());
         assertEquals("User signup failed due to validation errors.", signUpResponse.getMessage());
         assertEquals("Email exists already.", signUpResponse.getErrors().getEmail());
         assertEquals("Invalid password. Must be at least 6 characters long.", signUpResponse.getErrors().getPassword());
@@ -108,7 +108,7 @@ public class SignUpTests {
         /* serialization */
         SignUpResponse signUpResponse = response.body().as(SignUpResponse.class);
 
-        assertEquals(422, response.getStatusCode());
+        assertEquals(422, response.statusCode());
         assertEquals("User signup failed due to validation errors.", signUpResponse.getMessage());
         assertEquals("Invalid email.", signUpResponse.getErrors().getEmail());
         assertEquals("Invalid password. Must be at least 6 characters long.", signUpResponse.getErrors().getPassword());

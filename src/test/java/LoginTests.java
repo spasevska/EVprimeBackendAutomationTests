@@ -3,7 +3,6 @@ import data.SignUpLoginDataFactory;
 import io.restassured.response.Response;
 import models.request.SignUpLoginRequest;
 import models.response.LoginResponse;
-import models.response.SignUpResponse;
 import org.junit.Before;
 import org.junit.Test;
 import util.Configuration;
@@ -14,25 +13,24 @@ import static org.junit.Assert.assertNotNull;
 
 public class LoginTests {
 
-    private SignUpLoginRequest signUpLoginRequest;
+    private SignUpLoginRequest signUpRequest;
 
     @Before
     public void setUp() {
-        signUpLoginRequest = new SignUpLoginDataFactory(createBodyForSignUpLogin())
+        signUpRequest = new SignUpLoginDataFactory(createBodyForSignUpLogin())
                 .setEmail(Configuration.USER_MAIL)
                 .setPassword(Configuration.USER_PASSWORD)
                 .createRequest();
 
-        Response response = new EVPrimeClient()
-                .signUp(signUpLoginRequest);
+        new EVPrimeClient()
+                .signUp(signUpRequest);
 
-        SignUpResponse signUpResponse = response.body().as(SignUpResponse.class);
     }
 
     @Test
     public void successfulLogin() {
         Response response = new EVPrimeClient()
-                .login(signUpLoginRequest);
+                .login(signUpRequest);
 
         LoginResponse loginResponse = response.body().as(LoginResponse.class);
 

@@ -29,7 +29,7 @@ public class PostEventTests {
     @Before
     public void setUp() {
         signUpRequest = new SignUpLoginDataFactory(createBodyForSignUpLogin())
-                .setEmail(RandomStringUtils.randomAlphanumeric(10)+ "@mail.com")
+                .setEmail(RandomStringUtils.randomAlphanumeric(10) + "@mail.com")
                 .setPassword(RandomStringUtils.randomAlphanumeric(10))
                 .createRequest();
 
@@ -68,12 +68,129 @@ public class PostEventTests {
         assertEquals(postEventRequest.getDate(), dbClient.getEventFromDB(id).getDate());
         assertEquals(postEventRequest.getLocation(), dbClient.getEventFromDB(id).getLocation());
         assertEquals(postEventRequest.getDescription(), dbClient.getEventFromDB(id).getDescription());
+    }
 
+    // unsuccessful
+    @Test
+    public void postEventNonToken() {
+        postEventRequest = new PostEventDataFactory(createBodyForPostEvent())
+                .setTitle("EVprime")
+                .setImage("https://thumbs.dreamstime.com/b/beautiful-rain-forest-ang-ka-nature-trail-doi-inthanon-national-park-thailand-36703721.jpg")
+                .setDate("2026-01-25")
+                .setLocation("Tokio")
+                .setDescription("Nature")
+                .createRequest();
+
+        Response response = new EVPrimeClient()
+                .postEvent(postEventRequest, "");
+
+        PostUpdateDeleteEventResponse postResponse = response.body().as(PostUpdateDeleteEventResponse.class);
+
+        assertEquals(401, response.statusCode());
+        assertEquals("Not authenticated.", postResponse.getMessage());
+    }
+
+    @Test
+    public void postEventEmptyTitle() {
+        postEventRequest = new PostEventDataFactory(createBodyForPostEvent())
+                .setTitle("")
+                .setImage("https://thumbs.dreamstime.com/b/beautiful-rain-forest-ang-ka-nature-trail-doi-inthanon-national-park-thailand-36703721.jpg")
+                .setDate("2026-01-25")
+                .setLocation("Tokio")
+                .setDescription("Nature")
+                .createRequest();
+
+        Response response = new EVPrimeClient()
+                .postEvent(postEventRequest, loginResponseBody.getToken());
+
+        assertEquals(422, response.statusCode());
+        assertEquals("Adding the event failed due to validation errors.",
+                response.jsonPath().getString("message"));
+        assertEquals("Invalid title.", response.jsonPath().getString("errors.title"));
+
+    }
+
+    @Test
+    public void postEventEmptyImage() {
+        postEventRequest = new PostEventDataFactory(createBodyForPostEvent())
+                .setTitle("EVprime")
+                .setImage("")
+                .setDate("2026-01-25")
+                .setLocation("Tokio")
+                .setDescription("Nature")
+                .createRequest();
+
+        Response response = new EVPrimeClient()
+                .postEvent(postEventRequest, loginResponseBody.getToken());
+
+        assertEquals(422, response.statusCode());
+        assertEquals("Adding the event failed due to validation errors.",
+                response.jsonPath().getString("message"));
+        assertEquals("Invalid image.", response.jsonPath().getString("errors.image"));
+    }
+
+    @Test
+    public void postEventEmptyDate() {
+        postEventRequest = new PostEventDataFactory(createBodyForPostEvent())
+                .setTitle("EVprime")
+                .setImage("https://images.pexels.com/photos/35908536/pexels-photo-35908536.jpeg")
+                .setDate("")
+                .setLocation("Tokio")
+                .setDescription("Nature")
+                .createRequest();
+
+        Response response = new EVPrimeClient()
+                .postEvent(postEventRequest, loginResponseBody.getToken());
+
+        assertEquals(422, response.statusCode());
+        assertEquals("Adding the event failed due to validation errors.",
+                response.jsonPath().getString("message"));
+        assertEquals("Invalid date.", response.jsonPath().getString("errors.date"));
+    }
+
+    @Test
+    public void postEventEmptyLocation() {
+        postEventRequest = new PostEventDataFactory(createBodyForPostEvent())
+                .setTitle("EVprime")
+                .setImage("https://images.pexels.com/photos/35908536/pexels-photo-35908536.jpeg")
+                .setDate("2026-01-25")
+                .setLocation("")
+                .setDescription("Nature")
+                .createRequest();
+
+        Response response = new EVPrimeClient()
+                .postEvent(postEventRequest, loginResponseBody.getToken());
+
+        assertEquals(422, response.statusCode());
+        assertEquals("Adding the event failed due to validation errors.",
+                response.jsonPath().getString("message"));
+        assertEquals("Invalid location.", response.jsonPath().getString("errors.description"));
+    }
+
+    @Test
+    public void postEventEmptyDescription() {
+        postEventRequest = new PostEventDataFactory(createBodyForPostEvent())
+                .setTitle("EVprime")
+                .setImage("https://images.pexels.com/photos/35908536/pexels-photo-35908536.jpeg")
+                .setDate("2026-01-25")
+                .setLocation("Tokio")
+                .setDescription("")
+                .createRequest();
+
+        Response response = new EVPrimeClient()
+                .postEvent(postEventRequest, loginResponseBody.getToken());
+
+        assertEquals(422, response.statusCode());
+        assertEquals("Adding the event failed due to validation errors.",
+                response.jsonPath().getString("message"));
+        assertEquals("Invalid description.", response.jsonPath().getString("errors.description"));
     }
 
     @After
     public void deleteEvent() throws SQLException {
-        assertTrue(dbClient.isEventDeleted(id));
+        if (id != null) {
+            assertTrue(dbClient.isEventDeleted(id));
+        }
     }
 
 }

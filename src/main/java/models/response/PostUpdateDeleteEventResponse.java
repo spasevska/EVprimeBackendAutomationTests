@@ -13,5 +13,8 @@ import lombok.NoArgsConstructor;
 public class PostUpdateDeleteEventResponse {
 
     String message;
+    ErrorResponse errors;
+    EventsResponse response;
+
 
 }
